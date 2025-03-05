@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback } from 'react';
+import React, { useEffect, useState, useCallback, useRef } from 'react';
 import {
     Grid, CircularProgress, Typography,
     Box, TextField, List, ListItemText, ListItem,
@@ -10,7 +10,8 @@ import { ThemeMode } from 'config';
 import useConfig from 'src/hooks/useConfig';
 import { useTheme } from '@mui/material/styles';
 import { IconButton } from '@mui/material';
-import { PlayArrow, Replay, Close } from '@mui/icons-material';
+// import { PlayArrow, Replay, Close } from '@mui/icons-material';
+import { PlayArrow, Pause, Replay, Save, Close } from "@mui/icons-material";
 
 const PatientList = ({ filter }) => {
     const [patients, setPatients] = useState([]);
@@ -23,6 +24,7 @@ const PatientList = ({ filter }) => {
     const [selectedPatient, setSelectedPatient] = useState(null);
     const [openMiddlePopup, setOpenMiddlePopup] = useState(false);
     const [openRightSection, setOpenRightSection] = useState(false);
+    const openRightSectionRef = useRef(openRightSection);
 
     // Timer State
     const [timer, setTimer] = useState(0);
@@ -84,24 +86,29 @@ const PatientList = ({ filter }) => {
         return 0;
     });
 
-    // const handleBookmarkClick = (id) => {
-    //     setBookmarkedId(prevId => (prevId === id ? null : id));
-    //     setSelectedPatient(patients.find(p => p.patientId === id));
-    //     setOpenMiddlePopup(true);
-    // };
+
+    useEffect(() => {
+        openRightSectionRef.current = openRightSection;
+    }, [openRightSection]);
 
     // Inside the PatientList component
     const handleBookmarkClick = useCallback((id) => {
+        console.log(openRightSectionRef.current);
+
+        if (openRightSectionRef.current) {
+            alert("You must save the current patient time first.");
+            return false;
+        }
         setBookmarkedId(prevId => (prevId === id ? null : id));
         setSelectedPatient(patients.find(p => p.patientId === id));
         setOpenMiddlePopup(true);
-    }, [patients]); // Ensures the function is memoized and only changes when patients change
+        setOpenRightSection(true);
+    }, [patients]); // ❌ Removed openRightSection from dependencies
 
     const handleTimeButtonClick = () => {
-        setOpenMiddlePopup(false);
         setOpenRightSection(true);
-        setIsRunning(true);
-        setTimer(0); // Reset timer when starting
+        setIsRunning(true); // ✅ Start without resetting timer
+        setOpenMiddlePopup(false);
     };
 
     const handleCloseRightSection = () => {
@@ -123,7 +130,6 @@ const PatientList = ({ filter }) => {
         const secs = seconds % 60;
         return `${mins}:${secs < 10 ? '0' : ''}${secs}`;
     };
-
 
 
     return (

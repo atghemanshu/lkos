@@ -1,4 +1,4 @@
-import React, { useEffect, useState, memo  } from 'react';
+import React, { useEffect, useState, memo } from 'react';
 import {
     Card, CardContent, Typography, Grid, Avatar, IconButton, Box, Tooltip, Dialog, Button,
     DialogTitle,
@@ -97,11 +97,11 @@ const PatientCard = memo(({ patient, isBookmarked, onBookmarkClick }) => {
             >
                 <Tooltip title="Bookmark" placement="top">
                     <IconButton
-                         aria-label="bookmark"
+                        aria-label="bookmark"
                         size="small"
                         onClick={() => onBookmarkClick(patient.patientId)}
                     >
-                          {isBookmarked ? <BookmarkBorderIcon sx={{ color: "gold" }} /> : <BookmarkBorderIcon />}
+                        {isBookmarked ? <BookmarkBorderIcon sx={{ color: "gold" }} /> : <BookmarkBorderIcon />}
                     </IconButton>
                 </Tooltip>
 
@@ -123,22 +123,39 @@ const PatientCard = memo(({ patient, isBookmarked, onBookmarkClick }) => {
 
 
 
-                <CardContent sx={{ display: 'flex', alignItems: 'center', gap: '12px', flexWrap: 'nowrap', paddingBottom: '2px' }}>
-                    <Avatar sx={{ width: 50, height: 50, background: '#21AAF3', color: '#FFFFFF' }}>
-                        <Typography variant="h4" color="white">
-                            {patient.firstName.charAt(0)}
-                            {patient.lastName.charAt(0)}
-                        </Typography>
-                    </Avatar>
-                    <Box sx={{ minWidth: '150px', flexShrink: 0 }}>
-                        <Typography variant="subtitle1" noWrap>
-                            {patient.fullName} ({patient.age}/{patient.gender.charAt(0)})
-                        </Typography>
-                        <Typography variant="caption" color="textSecondary">
-                            ID: {patient.patientId}
-                        </Typography>
+                <CardContent
+                    sx={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '12px',
+                        paddingBottom: '2px',
+                        flexWrap: 'nowrap',
+                        justifyContent: 'space-between'
+                    }}
+                >
+                    {/* Avatar and Name */}
+                    <Box sx={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                        <Avatar sx={{ width: 50, height: 50, background: '#21AAF3', color: '#FFFFFF' }}>
+                            <Typography variant="h4" color="white">
+                                {patient.firstName.charAt(0)}
+                                {patient.lastName.charAt(0)}
+                            </Typography>
+                        </Avatar>
+                        <Box sx={{ minWidth: '160px', flexShrink: 0 }}>
+                            <Typography variant="subtitle1" noWrap>
+                                {patient.fullName}
+                            </Typography>
+                            <Typography variant="caption" color="textSecondary">
+                                Age: {patient.age} | Gender: {patient.gender.charAt(0) == "F" ? "Female" : "Male"} {" |   "}
+                            </Typography>
+                            <Typography variant="caption" color="textSecondary">
+                                ID: {patient.patientId}
+                            </Typography>
+                        </Box>
                     </Box>
-                    <Grid container spacing={1} alignItems="center" sx={{ flexGrow: 1, flexWrap: 'nowrap' }}>
+
+                    {/* Patient Info Icons */}
+                    <Box sx={{ display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap' }}>
                         {[
                             { src: BloodPressureIcon, label: 'BP', value: patient.bp },
                             { src: HeartRateIcon, label: 'Pulse', value: patient.pulse },
@@ -149,7 +166,7 @@ const PatientCard = memo(({ patient, isBookmarked, onBookmarkClick }) => {
                             { src: BMIIcon, label: 'BMI', value: '--' },
                             { src: ActivityIcon, label: 'Activity', value: patient.activity }
                         ].map((item, index) => (
-                            <Grid key={index} item sx={{ textAlign: 'center' }}>
+                            <Box key={index} sx={{ textAlign: 'center', minWidth: '60px' }}>
                                 <Tooltip title={item.label} placement="top">
                                     <img
                                         src={item.src}
@@ -163,24 +180,28 @@ const PatientCard = memo(({ patient, isBookmarked, onBookmarkClick }) => {
                                 <Typography variant="caption" display="block">
                                     {item.value}
                                 </Typography>
-                            </Grid>
+                            </Box>
                         ))}
-                    </Grid>
+                    </Box>
+
+                    {/* Last Notes Section - Full Right */}
                     <Box
                         sx={{
                             bgcolor: theme.palette.mode === ThemeMode.DARK ? 'dark.main' : 'primary.light',
-                            padding: '6px',
+                            padding: '8px',
                             borderRadius: '6px',
                             border: '1px solid #d1d3e2',
-                            minWidth: '320px',
-                            flexShrink: 0
+                            minWidth: '250px',
+                            maxWidth: '300px',
+                            flexShrink: 0,
+                            textAlign: 'left'
                         }}
                     >
                         <Typography variant="body2" fontWeight="bold">
-                            <Typography variant="caption" color="textSecondary">
-                                Last Notes: {patient.latestNotes}
-                            </Typography>{' '}
-                            Spoke to patient
+                            Last Notes:
+                        </Typography>
+                        <Typography variant="caption" color="textSecondary" noWrap>
+                            {patient.latestNotes} - Spoke to patient
                         </Typography>
 
                         <Box sx={{ display: 'flex', justifyContent: 'space-between', marginTop: '4px' }}>
@@ -193,13 +214,14 @@ const PatientCard = memo(({ patient, isBookmarked, onBookmarkClick }) => {
                         </Box>
                     </Box>
                 </CardContent>
+
             </Card>
 
             {/* Patient Details Modal */}
             <Dialog open={isModalOpen} onClose={handleCloseModal} fullWidth maxWidth="xl">
                 <DialogTitle>
                     <Box display="flex" justifyContent="space-between" alignItems="center">
-                        <span>Patient Details</span>
+                        <span>Patient Details for {patient?.fullName}</span>
                         <Button onClick={handleCloseModal}  >
                             X
                         </Button>

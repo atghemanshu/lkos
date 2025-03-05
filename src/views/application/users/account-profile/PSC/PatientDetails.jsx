@@ -23,12 +23,13 @@ import AddIcon from "@mui/icons-material/Add";
 import LinearProgress from "@mui/material/LinearProgress";
 import HistoryIcon from "@mui/icons-material/History";
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
+import { Divider } from "@mui/material";
 
 
 
 const PatientDetails = ({ patient }) => {
     const { user } = useAuth();
-    console.log(patient);
+    // console.log(patient);
 
     return (
         <Box p={2} sx={{ backgroundColor: "#f5f5f5", minHeight: "100vh" }}>
@@ -36,6 +37,96 @@ const PatientDetails = ({ patient }) => {
             <Grid container spacing={2} mt={2}>
                 {/* Left Side */}
                 <Grid item xs={6}>
+                    {/* userdetails */}
+                    <Card sx={{ backgroundColor: "#ffffff", boxShadow: 4, borderRadius: 3, p: 3, minHeight: 280 }}>
+                        <CardContent>
+
+                            <Grid container alignItems="center" spacing={3}>
+
+                                <Grid container spacing={2}>
+
+                                    {/* name */}
+                                    <Grid item xs={3}>
+                                        <Typography variant="body2" fontWeight="bold">Name</Typography>
+                                        <Typography variant="body2" color="text.secondary">{patient?.fullName || 'N/A'}</Typography>
+                                    </Grid>
+
+                                    {/* Gender */}
+                                    <Grid item xs={3}>
+                                        <Typography variant="body2" fontWeight="bold">Gender</Typography>
+                                        <Typography variant="body2" color="text.secondary">{patient?.gender || 'N/A'}</Typography>
+                                    </Grid>
+
+                                    {/* Age */}
+                                    <Grid item xs={3}>
+                                        <Typography variant="body2" fontWeight="bold">Age</Typography>
+                                        <Typography variant="body2" color="text.secondary">{patient?.age ? `${patient.age} years` : 'N/A'}</Typography>
+                                    </Grid>
+
+                                    {/* Height */}
+                                    <Grid item xs={3}>
+                                        <Typography variant="body2" fontWeight="bold">Height</Typography>
+                                        <Typography variant="body2" color="text.secondary">{patient?.height || 'N/A'}</Typography>
+                                    </Grid>
+
+                                    {/* Weight */}
+                                    <Grid item xs={3}>
+                                        <Typography variant="body2" fontWeight="bold">Weight</Typography>
+                                        <Typography variant="body2" color="text.secondary">{patient?.weight || 'N/A'}</Typography>
+                                    </Grid>
+
+                                    {/* Pulse */}
+                                    <Grid item xs={3}>
+                                        <Typography variant="body2" fontWeight="bold">Pulse</Typography>
+                                        <Typography variant="body2" color="text.secondary">{patient?.pulse || 'N/A'}</Typography>
+                                    </Grid>
+
+                                    {/* Glucose */}
+                                    <Grid item xs={3}>
+                                        <Typography variant="body2" fontWeight="bold">Glucose</Typography>
+                                        <Typography variant="body2" color="text.secondary">{patient?.glucose || 'N/A'}</Typography>
+                                    </Grid>
+
+                                    {/* Temperature */}
+                                    <Grid item xs={3}>
+                                        <Typography variant="body2" fontWeight="bold">Temperature</Typography>
+                                        <Typography variant="body2" color="text.secondary">{patient?.temperature || 'N/A'}</Typography>
+                                    </Grid>
+
+                                    {/* SpO2 */}
+                                    <Grid item xs={3}>
+                                        <Typography variant="body2" fontWeight="bold">SpO2</Typography>
+                                        <Typography variant="body2" color="text.secondary">{patient?.spO2 || 'N/A'}</Typography>
+                                    </Grid>
+
+                                    {/* Blood Pressure */}
+                                    <Grid item xs={3}>
+                                        <Typography variant="body2" fontWeight="bold">Blood Pressure</Typography>
+                                        <Typography variant="body2" color="text.secondary">{patient?.bp || 'N/A'}</Typography>
+                                    </Grid>
+
+                                    {/* HbA1c */}
+                                    <Grid item xs={3}>
+                                        <Typography variant="body2" fontWeight="bold">HbA1c</Typography>
+                                        <Typography variant="body2" color="text.secondary">{patient?.hbA1c || 'N/A'}</Typography>
+                                    </Grid>
+
+                                    <Grid item xs={3}>
+                                        <Typography variant="body2" fontWeight="bold">Latest Notes</Typography>
+                                        <Typography variant="body2" color="text.secondary">
+                                            {patient?.latestNotes ? patient.latestNotes : 'No recent notes available'}
+                                        </Typography>
+                                    </Grid>
+
+
+                                </Grid>
+
+
+
+                            </Grid>
+                        </CardContent>
+                    </Card>
+                    <br></br>
                     {/* Compliance */}
                     <Card sx={{ backgroundColor: "#ffffff", boxShadow: 4, borderRadius: 3, p: 3, minHeight: 280 }}>
                         <CardContent>
@@ -110,9 +201,6 @@ const PatientDetails = ({ patient }) => {
                             </Grid>
                         </CardContent>
                     </Card>
-
-
-
 
 
                     {/* Appointments */}
