@@ -128,7 +128,7 @@ const Home = () => {
         const rpm = patients.filter((patient) => patient.isRPM).length;
         const ccm = patients.filter((patient) => patient.isCCM).length;
         const telehealth = patients.filter((patient) => patient.isTelehealth).length;
-    
+
         setPatientCounts({
             ALL: all,
             RPM: rpm,
@@ -136,11 +136,12 @@ const Home = () => {
             Telehealth: telehealth || 0
         });
     }, [patients]);
-    
+
 
 
     return (
-        <MainCard>
+        <MainCard sx={{ overflow: 'hidden', height: '100vh' }}>
+
             <Grid container spacing={gridSpacing}>
                 <Grid item xs={12}>
                     {/* Sticky Tabs */}
@@ -199,17 +200,17 @@ const Home = () => {
                     <Box
                         sx={{
                             height: 'calc(100vh - 150px)', // Adjust height dynamically
-                            overflowY: 'auto',
+                            overflowY: 'hidden',
                             padding: 2
                         }}
                     >
                         <TabPanel value={value} index={0}>
                             <Profile />
                         </TabPanel>
-                         <TabPanel value={value} index={1}>
+                        <TabPanel value={value} index={1}>
                             <PatientList filter="ALL" />
                         </TabPanel>
-                       {/* <TabPanel value={value} index={2}>
+                        {/* <TabPanel value={value} index={2}>
                             <PatientList filter="RPM" />
                         </TabPanel>
                         <TabPanel value={value} index={3}>

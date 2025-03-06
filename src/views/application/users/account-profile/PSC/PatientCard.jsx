@@ -3,7 +3,9 @@ import {
     Card, CardContent, Typography, Grid, Avatar, IconButton, Box, Tooltip, Dialog, Button,
     DialogTitle,
     DialogContent,
-    DialogActions
+    DialogActions,
+    Divider,
+    useMediaQuery
 } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 import EditNoteRoundedIcon from '@mui/icons-material/EditNoteRounded';
@@ -38,11 +40,13 @@ const formatLastUpdated = (minutes) => {
 const PatientCard = memo(({ patient, isBookmarked, onBookmarkClick }) => {
     const theme = useTheme();
     const { mode } = useConfig();
+    const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
     // console.log("Rendering PatientCard:", patient.patientId, isBookmarked);
 
     // Modal State
     const [selectedPatient, setSelectedPatient] = useState(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const [nameModel, setNameModel] = useState(false);
 
     const handleView = async () => {
         setIsModalOpen(true);
@@ -69,6 +73,16 @@ const PatientCard = memo(({ patient, isBookmarked, onBookmarkClick }) => {
         setIsModalOpen(false);
         setSelectedPatient(null);
     };
+
+
+    const handleNameOpenDialog = () => {
+        setNameModel(true);
+    };
+
+    const handleNameCloseDialog = () => {
+        setNameModel(false);
+    };
+
 
 
 
@@ -117,36 +131,50 @@ const PatientCard = memo(({ patient, isBookmarked, onBookmarkClick }) => {
                         sx={{ position: 'absolute', top: 4, right: 40 }}
                         onClick={() => handleView(patient.patientId)}
                     >
-                        <ArticleIcon sx={{ fontSize: 18 }} />
+                        <ArticleIcon sx={{ fontSize: 18, mt: 0.2 }} />
                     </IconButton>
                 </Tooltip>
-
 
 
                 <CardContent
                     sx={{
                         display: 'flex',
+                        flexDirection: { xs: 'column', sm: 'row' },
                         alignItems: 'center',
                         gap: '12px',
                         paddingBottom: '2px',
-                        flexWrap: 'nowrap',
+                        flexWrap: 'wrap',
                         justifyContent: 'space-between'
                     }}
                 >
                     {/* Avatar and Name */}
-                    <Box sx={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                    <Box
+                        sx={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '12px',
+                            width: { xs: '100%', sm: 'auto' },
+                            justifyContent: { xs: 'center', sm: 'flex-start' },
+                            flexWrap: 'wrap'
+                        }}
+                    >
                         <Avatar sx={{ width: 50, height: 50, background: '#21AAF3', color: '#FFFFFF' }}>
                             <Typography variant="h4" color="white">
                                 {patient.firstName.charAt(0)}
                                 {patient.lastName.charAt(0)}
                             </Typography>
                         </Avatar>
-                        <Box sx={{ minWidth: '160px', flexShrink: 0 }}>
-                            <Typography variant="subtitle1" noWrap>
+                        <Box sx={{ minWidth: '160px', flexShrink: 0, textAlign: { xs: 'center', sm: 'left' } }}>
+                            <Typography
+                                variant="subtitle1"
+                                noWrap
+                                sx={{ cursor: "pointer", color: "#1e88e5", "&:hover": { color: "blue" } }}
+                                onClick={handleNameOpenDialog} // Open dialog on click
+                            >
                                 {patient.fullName}
                             </Typography>
                             <Typography variant="caption" color="textSecondary">
-                                Age: {patient.age} | Gender: {patient.gender.charAt(0) == "F" ? "Female" : "Male"} {" |   "}
+                                Age: {patient.age} | Gender: {patient.gender.charAt(0) === "F" ? "Female" : "Male"}
                             </Typography>
                             <Typography variant="caption" color="textSecondary">
                                 ID: {patient.patientId}
@@ -155,7 +183,16 @@ const PatientCard = memo(({ patient, isBookmarked, onBookmarkClick }) => {
                     </Box>
 
                     {/* Patient Info Icons */}
-                    <Box sx={{ display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap' }}>
+                    <Box
+                        sx={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '10px',
+                            flexWrap: 'wrap',
+                            justifyContent: { xs: 'center', sm: 'flex-start' },
+                            width: { xs: '100%', sm: 'auto' }
+                        }}
+                    >
                         {[
                             { src: BloodPressureIcon, label: 'BP', value: patient.bp },
                             { src: HeartRateIcon, label: 'Pulse', value: patient.pulse },
@@ -184,14 +221,14 @@ const PatientCard = memo(({ patient, isBookmarked, onBookmarkClick }) => {
                         ))}
                     </Box>
 
-                    {/* Last Notes Section - Full Right */}
+                    {/* Last Notes Section */}
                     <Box
                         sx={{
                             bgcolor: theme.palette.mode === ThemeMode.DARK ? 'dark.main' : 'primary.light',
                             padding: '8px',
                             borderRadius: '6px',
                             border: '1px solid #d1d3e2',
-                            minWidth: '250px',
+                            minWidth: { xs: '100%', sm: '250px' },
                             maxWidth: '300px',
                             flexShrink: 0,
                             textAlign: 'left'
@@ -214,6 +251,7 @@ const PatientCard = memo(({ patient, isBookmarked, onBookmarkClick }) => {
                         </Box>
                     </Box>
                 </CardContent>
+
 
             </Card>
 
@@ -239,6 +277,112 @@ const PatientCard = memo(({ patient, isBookmarked, onBookmarkClick }) => {
                 </DialogContent>
                 <DialogActions>
                     <Button onClick={handleCloseModal} color="secondary" variant="contained">
+                        Close
+                    </Button>
+                </DialogActions>
+            </Dialog>
+
+
+
+
+
+
+
+
+
+            {/* name model open */}
+            <Dialog
+                open={nameModel}
+                onClose={handleNameCloseDialog}
+                fullWidth={true}
+                maxWidth="md"
+                fullScreen={isMobile}
+            >
+
+                <DialogTitle>
+                    <Box display="flex" justifyContent="space-between" alignItems="center">
+                        <span>Patient Details for {patient?.fullName}</span>
+                        <Button onClick={handleNameCloseDialog}  >
+                            X
+                        </Button>
+                    </Box>
+                </DialogTitle>
+                <DialogContent sx={{ padding: '20px' }}>
+                    <Grid container spacing={3}>
+                        {/* Patient Info Section */}
+                        <Grid item xs={12} md={6}>
+                            <Card elevation={3} sx={{ marginBottom: '20px' }}>
+                                <CardContent>
+                                    <Typography variant="h6" sx={{ fontWeight: "bold", marginBottom: '15px' }}>
+                                        Patient Info
+                                    </Typography>
+                                    <Divider sx={{ marginBottom: '15px' }} />
+                                    <Box marginBottom="8px">
+                                        <Typography><strong>Patient Name:</strong> {patient.fullName}</Typography>
+                                    </Box>
+                                    <Box marginBottom="8px">
+                                        <Typography><strong>Current Status:</strong> {patient.status}</Typography>
+                                    </Box>
+                                    <Box marginBottom="8px">
+                                        <Typography><strong>Contact Number:</strong> {patient.contact || "-"}</Typography>
+                                    </Box>
+                                    <Box marginBottom="8px">
+                                        <Typography><strong>Chronic Conditions:</strong> {patient.conditions || "-"}</Typography>
+                                    </Box>
+                                    <Box marginBottom="8px">
+                                        <Typography><strong>L/Last Admit:</strong> {patient.lastAdmit || "-"}</Typography>
+                                    </Box>
+                                    <Box marginBottom="8px">
+                                        <Typography><strong>Primary PPC:</strong> {patient.primaryPPC || "-"}</Typography>
+                                    </Box>
+                                    <Box marginBottom="8px">
+                                        <Typography><strong>Primary Doctor:</strong> {patient.primaryDoctor || "-"}</Typography>
+                                    </Box>
+                                    <Box marginBottom="8px">
+                                        <Typography><strong>HA (Hospital Admission):</strong> {patient.hospitalAdmission || "-"}</Typography>
+                                    </Box>
+                                </CardContent>
+                            </Card>
+                        </Grid>
+
+                        {/* Vital Info Section */}
+                        <Grid item xs={12} md={6}>
+                            <Card elevation={3}>
+                                <CardContent>
+                                    <Typography variant="h6" sx={{ fontWeight: "bold", marginBottom: '15px' }}>
+                                        Vital Info
+                                    </Typography>
+                                    <Divider sx={{ marginBottom: '15px' }} />
+                                    <Grid container sx={{ marginBottom: '10px' }}>
+                                        <Grid item xs={6}><strong>Vital Name</strong></Grid>
+                                        <Grid item xs={3}><strong>Vital Value</strong></Grid>
+                                        <Grid item xs={3}><strong>Last Update On</strong></Grid>
+                                    </Grid>
+                                    <Divider sx={{ marginBottom: '10px' }} />
+                                    {[
+                                        { name: "Height", value: patient?.height || "-", date: "-" },
+                                        { name: "Weight", value: patient?.weight || "-", date: "-" },
+                                        { name: "Body Mass", value: patient?.bmi || "-", date: "-" },
+                                        { name: "Pulse", value: patient?.pulse || "-", date: "-" },
+                                        { name: "Temperature", value: patient?.temperature || "-", date: "-" },
+                                        { name: "Blood Pressure", value: patient?.bloodPressure || "14/97 mm Hg", date: "07/28/2022" },
+                                        { name: "Glucose", value: patient?.glucose || "-", date: "-" },
+                                        { name: "SpO2", value: patient?.spo2 || "-", date: "-" }
+                                    ].map((vital, index) => (
+                                        <Grid container key={index} sx={{ marginBottom: '8px' }}>
+                                            <Grid item xs={6}>{vital.name}</Grid>
+                                            <Grid item xs={3}>{vital.value}</Grid>
+                                            <Grid item xs={3}>{vital.date}</Grid>
+                                        </Grid>
+                                    ))}
+                                </CardContent>
+                            </Card>
+                        </Grid>
+                    </Grid>
+                </DialogContent>
+
+                <DialogActions sx={{ padding: '20px' }}>
+                    <Button onClick={handleNameCloseDialog} color="primary" variant="contained">
                         Close
                     </Button>
                 </DialogActions>

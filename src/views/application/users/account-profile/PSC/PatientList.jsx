@@ -12,6 +12,9 @@ import { useTheme } from '@mui/material/styles';
 import { IconButton } from '@mui/material';
 // import { PlayArrow, Replay, Close } from '@mui/icons-material';
 import { PlayArrow, Pause, Replay, Save, Close } from "@mui/icons-material";
+import { useMediaQuery } from "@mui/material";
+
+
 
 const PatientList = ({ filter }) => {
     const [patients, setPatients] = useState([]);
@@ -25,6 +28,7 @@ const PatientList = ({ filter }) => {
     const [openMiddlePopup, setOpenMiddlePopup] = useState(false);
     const [openRightSection, setOpenRightSection] = useState(false);
     const openRightSectionRef = useRef(openRightSection);
+    const isSmallScreen = useMediaQuery(theme.breakpoints.down("sm"));
 
     // Timer State
     const [timer, setTimer] = useState(0);
@@ -133,30 +137,47 @@ const PatientList = ({ filter }) => {
 
 
     return (
-        <Box sx={{ height: '700px', overflowY: 'auto', padding: '10px', bgcolor: mode === ThemeMode.DARK ? 'dark.main' : 'background.paper' }}>
-            <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
-                <Typography variant="h6">Total Records: {sortedPatients.length}</Typography>
-                <TextField
-                    label="Search Patients"
-                    variant="outlined"
-                    size="small"
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                    sx={{ width: '30%' }}
-                />
-                <Box sx={{ width: '20%' }}>
-                    <FormControl fullWidth size="small">
-                        <InputLabel>Sort By</InputLabel>
-                        <Select value={sortBy} onChange={(e) => setSortBy(e.target.value)}>
-                            <MenuItem value="name">Name</MenuItem>
-                            <MenuItem value="age">Age</MenuItem>
-                            <MenuItem value="lastVisit">Last Visit</MenuItem>
-                        </Select>
-                    </FormControl>
-                </Box>
-            </Box>
-            <Box display="flex" gap={2}>
-                <Box sx={{ flex: openRightSection ? 2 : 1, transition: 'flex 0.3s' }}>
+        <>
+            <Box sx={{ display: "flex", height: "100vh", overflow: "hidden" }}>
+                {/* Left Column (Patient List) */}
+                <Box
+                    sx={{
+                        flex: openRightSection ? 2 : 1,
+                        transition: "flex 0.3s ease-in-out",
+                        height: "120vh",
+                        overflowY: "auto",
+                        padding: "10px",
+                        bgcolor: mode === ThemeMode.DARK ? "dark.main" : "background.paper",
+                    }}
+                >
+                    <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
+                        <Typography variant="h6">Total Records: {sortedPatients.length}</Typography>
+                        <TextField
+                            label="Search Patients"
+                            variant="outlined"
+                            size="small"
+                            value={searchQuery}
+                            onChange={(e) => setSearchQuery(e.target.value)}
+                            sx={{ width: "30%" }}
+                        />
+                        <Box
+                            sx={{
+                                width: '20%',
+                                borderColor: mode === ThemeMode.DARK ? 'dark.main' : 'primary.light',
+                                bgcolor: mode === ThemeMode.DARK ? 'dark.main' : 'primary.light'
+                            }}
+                        >
+                            <FormControl fullWidth size="small">
+                                <InputLabel>Sort By</InputLabel>
+                                <Select sx={{ mt: 1 }} value={sortBy} onChange={(e) => setSortBy(e.target.value)}>
+                                    <MenuItem value="name">Name</MenuItem>
+                                    <MenuItem value="age">Age</MenuItem>
+                                    <MenuItem value="lastVisit">Last Visit</MenuItem>
+                                </Select>
+                            </FormControl>
+                        </Box>
+                    </Box>
+
                     <Grid container spacing={2}>
                         {loading ? (
                             <Grid item xs={12} textAlign="center">
@@ -171,25 +192,177 @@ const PatientList = ({ filter }) => {
                                         isBookmarked={bookmarkedId === patient.patientId}
                                         onBookmarkClick={handleBookmarkClick}
                                     />
-
                                 </Grid>
                             ))
                         ) : (
                             <Grid item xs={12} textAlign="center">
-                                <Typography variant="body1">No patients found for {filter}.</Typography>
+                                <Typography variant="body1">No patients found.</Typography>
                             </Grid>
                         )}
                     </Grid>
                 </Box>
-               
+
+                {/* Right Sidebar (Fixed Position) */}
+                {openRightSection && (
+                    <Box
+                        sx={{
+                            width: 300, // Default for Web
+                            height: 720,
+                            bgcolor: "#f8fafc",
+                            padding: 2,
+                            boxShadow: "-3px 0px 5px rgba(0, 0, 0, 0.2)",
+                            position: "fixed",
+                            right: 0,
+                            top: "50%",
+                            transform: "translateY(-50%)",
+                            zIndex: 1300,
+                            display: "flex",
+                            flexDirection: "column",
+                            alignItems: "center",
+                            borderRadius: "10px",
+                            overflow: "hidden",
+                            mt: 3,
+
+                            // Mobile View Styles
+                            "@media (max-width: 600px)": {
+                                width: "100%", // Full width
+                                height: "100vh", // Fixed height
+                                top: "auto",
+                                bottom: 0,
+                                right: 0,
+                                transform: "none", // No vertical centering
+                                borderRadius: "20px 20px 0 0", // Rounded top corners
+                                boxShadow: "0px -5px 10px rgba(0, 0, 0, 0.2)", // Soft top shadow
+                                animation: "slideUp 0.3s ease-in-out",
+                            },
+
+                            "@keyframes slideUp": {
+                                from: { transform: "translateY(100%)" },
+                                to: { transform: "translateY(0)" },
+                            },
+                        }}
+                    >
+                        {/* Timer & Control Icons */}
+                        <Box sx={{ display: "flex", alignItems: "center", gap: 1, position: "absolute", top: 8, left: 8 }}>
+                            <Typography sx={{ color: "red", fontWeight: "bold" }}>{formatTime(timer)}</Typography>
+
+                            <IconButton
+                                onClick={handleTimeButtonClick}
+                                sx={{
+                                    bgcolor: "green",
+                                    color: "white",
+                                    width: 35,
+                                    height: 35,
+                                    opacity: isRunning ? 0.3 : 1,
+                                    "&:hover": { bgcolor: "darkgreen" },
+                                }}
+                            >
+                                <PlayArrow fontSize="small" />
+                            </IconButton>
+
+                            <IconButton
+                                onClick={handleCloseButtonClick}
+                                sx={{
+                                    bgcolor: "darkorange",
+                                    color: "white",
+                                    width: 35,
+                                    height: 35,
+                                    opacity: isRunning ? 1 : 0.4,
+                                    "&:hover": { bgcolor: "darkorange" },
+                                }}
+                            >
+                                <Pause fontSize="small" />
+                            </IconButton>
+
+                            <IconButton
+                                onClick={handleRestartButtonClick}
+                                sx={{
+                                    bgcolor: "blue",
+                                    color: "white",
+                                    width: 35,
+                                    height: 35,
+                                    "&:hover": { bgcolor: "darkblue" },
+                                }}
+                            >
+                                <Replay fontSize="small" />
+                            </IconButton>
+
+                            <IconButton
+                                onClick={() => console.log(`Saved time: ${formatTime(timer)}`)}
+                                sx={{
+                                    bgcolor: "purple",
+                                    color: "white",
+                                    width: 35,
+                                    height: 35,
+                                    "&:hover": { bgcolor: "purple" },
+                                }}
+                            >
+                                <Save fontSize="small" />
+                            </IconButton>
+                        </Box>
+
+                        {/* Close Button */}
+                        <IconButton
+                            onClick={handleCloseRightSection}
+                            sx={{
+                                position: "absolute",
+                                top: 8,
+                                right: 1,
+                                bgcolor: "red",
+                                color: "white",
+                                width: 35,
+                                height: 35,
+                                "&:hover": { bgcolor: "darkred" },
+                            }}
+                        >
+                            <Close fontSize="small" />
+                        </IconButton>
+
+                        {/* Profile Image */}
+                        <Box sx={{ width: 100, height: 100, borderRadius: "50%", overflow: "hidden", mt: 4 }}>
+                            <img
+                                src="/src/assets/images/users/user-round.svg"
+                                alt="Profile"
+                                style={{ width: "100%", height: "100%", objectFit: "cover" }}
+                            />
+                        </Box>
+
+                        {/* Name */}
+                        <Typography variant="h6" sx={{ color: "#007bff", fontWeight: "bold", mt: 1 }}>
+                            {selectedPatient.fullName}
+                        </Typography>
+
+                        {/* Scrollable Menu List */}
+                        <Box sx={{ width: "100%", flex: 1, overflowY: "auto", mt: 2 }}>
+                            <List sx={{ width: "100%" }}>
+                                {[
+                                    "Change Password",
+                                    "Edit Profile",
+                                    "Emergency Info",
+                                    "Sponsors",
+                                    "Medication",
+                                    "Patient History",
+                                    "Life Card",
+                                    "SVC Notes",
+                                    "SVC Docs",
+                                    "Tele Health",
+                                ].map((text, index) => (
+                                    <ListItem key={index} sx={{ borderBottom: "1px solid #ddd", padding: 1 }}>
+                                        <ListItemText primary={text} />
+                                    </ListItem>
+                                ))}
+                            </List>
+                        </Box>
+
+                        <Button variant="contained" color="secondary" onClick={handleCloseRightSection} sx={{ mt: 2 }}>
+                            Close
+                        </Button>
+                    </Box>
+                )}
+
 
             </Box>
 
-
-
-
-
-            {/* First Popup (Middle) */}
             <Dialog
                 open={openMiddlePopup}
                 onClose={() => {
@@ -233,8 +406,9 @@ const PatientList = ({ filter }) => {
                     </IconButton>
                 </DialogActions>
             </Dialog>
+        </>
 
-        </Box >
+
     );
 };
 

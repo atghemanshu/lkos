@@ -8,6 +8,8 @@ import {
     Grid,
     IconButton,
     Typography,
+    useMediaQuery,
+    useTheme
 } from "@mui/material";
 import PersonIcon from "@mui/icons-material/Person";
 import UploadIcon from "@mui/icons-material/Upload";
@@ -29,6 +31,8 @@ import { Divider } from "@mui/material";
 
 const PatientDetails = ({ patient }) => {
     const { user } = useAuth();
+    const theme = useTheme();
+    const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
     // console.log(patient);
 
     return (
@@ -36,104 +40,94 @@ const PatientDetails = ({ patient }) => {
             {/* Grid Layout */}
             <Grid container spacing={2} mt={2}>
                 {/* Left Side */}
-                <Grid item xs={6}>
+                <Grid item xs={12} md={6}> {/* Adjusted for responsiveness */}
                     {/* userdetails */}
-                    <Card sx={{ backgroundColor: "#ffffff", boxShadow: 4, borderRadius: 3, p: 3, minHeight: 280 }}>
+                    <Card sx={{ backgroundColor: "#ffffff", boxShadow: 4, borderRadius: 3, p: 3, minHeight: 280, mb: 2 }}>
                         <CardContent>
-
                             <Grid container alignItems="center" spacing={3}>
-
                                 <Grid container spacing={2}>
-
                                     {/* name */}
-                                    <Grid item xs={3}>
+                                    <Grid item xs={6} sm={3}>
                                         <Typography variant="body2" fontWeight="bold">Name</Typography>
                                         <Typography variant="body2" color="text.secondary">{patient?.fullName || 'N/A'}</Typography>
                                     </Grid>
 
                                     {/* Gender */}
-                                    <Grid item xs={3}>
+                                    <Grid item xs={6} sm={3}>
                                         <Typography variant="body2" fontWeight="bold">Gender</Typography>
                                         <Typography variant="body2" color="text.secondary">{patient?.gender || 'N/A'}</Typography>
                                     </Grid>
 
                                     {/* Age */}
-                                    <Grid item xs={3}>
+                                    <Grid item xs={6} sm={3}>
                                         <Typography variant="body2" fontWeight="bold">Age</Typography>
                                         <Typography variant="body2" color="text.secondary">{patient?.age ? `${patient.age} years` : 'N/A'}</Typography>
                                     </Grid>
 
                                     {/* Height */}
-                                    <Grid item xs={3}>
+                                    <Grid item xs={6} sm={3}>
                                         <Typography variant="body2" fontWeight="bold">Height</Typography>
                                         <Typography variant="body2" color="text.secondary">{patient?.height || 'N/A'}</Typography>
                                     </Grid>
 
                                     {/* Weight */}
-                                    <Grid item xs={3}>
+                                    <Grid item xs={6} sm={3}>
                                         <Typography variant="body2" fontWeight="bold">Weight</Typography>
                                         <Typography variant="body2" color="text.secondary">{patient?.weight || 'N/A'}</Typography>
                                     </Grid>
 
                                     {/* Pulse */}
-                                    <Grid item xs={3}>
+                                    <Grid item xs={6} sm={3}>
                                         <Typography variant="body2" fontWeight="bold">Pulse</Typography>
                                         <Typography variant="body2" color="text.secondary">{patient?.pulse || 'N/A'}</Typography>
                                     </Grid>
 
                                     {/* Glucose */}
-                                    <Grid item xs={3}>
+                                    <Grid item xs={6} sm={3}>
                                         <Typography variant="body2" fontWeight="bold">Glucose</Typography>
                                         <Typography variant="body2" color="text.secondary">{patient?.glucose || 'N/A'}</Typography>
                                     </Grid>
 
                                     {/* Temperature */}
-                                    <Grid item xs={3}>
+                                    <Grid item xs={6} sm={3}>
                                         <Typography variant="body2" fontWeight="bold">Temperature</Typography>
                                         <Typography variant="body2" color="text.secondary">{patient?.temperature || 'N/A'}</Typography>
                                     </Grid>
 
                                     {/* SpO2 */}
-                                    <Grid item xs={3}>
+                                    <Grid item xs={6} sm={3}>
                                         <Typography variant="body2" fontWeight="bold">SpO2</Typography>
                                         <Typography variant="body2" color="text.secondary">{patient?.spO2 || 'N/A'}</Typography>
                                     </Grid>
 
                                     {/* Blood Pressure */}
-                                    <Grid item xs={3}>
+                                    <Grid item xs={6} sm={3}>
                                         <Typography variant="body2" fontWeight="bold">Blood Pressure</Typography>
                                         <Typography variant="body2" color="text.secondary">{patient?.bp || 'N/A'}</Typography>
                                     </Grid>
 
                                     {/* HbA1c */}
-                                    <Grid item xs={3}>
+                                    <Grid item xs={6} sm={3}>
                                         <Typography variant="body2" fontWeight="bold">HbA1c</Typography>
                                         <Typography variant="body2" color="text.secondary">{patient?.hbA1c || 'N/A'}</Typography>
                                     </Grid>
 
-                                    <Grid item xs={3}>
+                                    <Grid item xs={12} sm={3}>
                                         <Typography variant="body2" fontWeight="bold">Latest Notes</Typography>
                                         <Typography variant="body2" color="text.secondary">
                                             {patient?.latestNotes ? patient.latestNotes : 'No recent notes available'}
                                         </Typography>
                                     </Grid>
-
-
                                 </Grid>
-
-
-
                             </Grid>
                         </CardContent>
                     </Card>
                     <br></br>
-                    {/* Compliance */}
                     <Card sx={{ backgroundColor: "#ffffff", boxShadow: 4, borderRadius: 3, p: 3, minHeight: 280 }}>
                         <CardContent>
-                            <Typography variant="h6" fontWeight="bold" >Compliance</Typography>
+                            <Typography variant="h6" fontWeight="bold">Compliance</Typography>
                             <br />
                             <Grid container alignItems="center" spacing={4}>
-
                                 {/* First Circle */}
                                 <Grid item sx={{ textAlign: "center", flexDirection: "column", mr: 8 }}>
                                     <Box sx={{ position: "relative", display: "inline-flex" }}>
@@ -197,11 +191,9 @@ const PatientDetails = ({ patient }) => {
                                     <Typography fontWeight="bold" color="text.secondary">KOS Score</Typography>
                                     <Typography variant="h6" fontWeight="bold" color="primary">0 / 100</Typography>
                                 </Grid>
-
                             </Grid>
                         </CardContent>
                     </Card>
-
 
                     {/* Appointments */}
                     <Card sx={{ minHeight: 290, mt: 2, backgroundColor: "#ffffff", boxShadow: 2, borderRadius: 2 }}>
@@ -265,7 +257,7 @@ const PatientDetails = ({ patient }) => {
                                         <TableRow>
                                             <TableCell colSpan={4} align="center">
                                                 <Box sx={{ backgroundColor: "#e3f2fd", p: 1, borderRadius: 1 }}>
-                                                    No upcoming appointment(s) found!
+                                                    No upcoming medication(s) found!
                                                 </Box>
                                             </TableCell>
                                         </TableRow>
@@ -277,18 +269,9 @@ const PatientDetails = ({ patient }) => {
                 </Grid>
 
 
-
-
-
-
-
-
-
-
                 {/* Right Side */}
-                <Grid item xs={6}>
+                <Grid item xs={12} md={6}> {/* Adjusted for responsiveness */}
                     {/* Complete History */}
-
                     <Card sx={{ minHeight: 280, backgroundColor: "#ffffff", boxShadow: 2, borderRadius: 2, p: 2 }}>
                         <CardContent>
                             <Box display="flex" alignItems="center" mb={2}>
@@ -326,7 +309,6 @@ const PatientDetails = ({ patient }) => {
                                         />
                                         <Typography variant="body2" align="center" mt={1}>History</Typography>
                                     </Box>
-
 
                                     {/* KOS (Full Green) */}
                                     <Box mb={2}>
@@ -395,8 +377,6 @@ const PatientDetails = ({ patient }) => {
                         </CardContent>
                     </Card>
 
-
-
                     {/* Reports/Documents */}
                     <Card sx={{ minHeight: 280, mt: 2, backgroundColor: "#ffffff", boxShadow: 2, borderRadius: 2, p: 2 }}>
                         <CardContent>
@@ -411,8 +391,16 @@ const PatientDetails = ({ patient }) => {
                             </Box>
                             <Grid container spacing={2} mt={2}>
                                 {["Lab", "Radiology", "Cardiac", "Lungs", "Women", "GI", "Care Plan", "Miscellaneous", "Legal"].map((item) => (
-                                    <Grid item xs={4} key={item}>
-                                        <Button variant="outlined" sx={{ width: "100%", justifyContent: "space-between", pr: 1 }}>
+                                    <Grid item xs={isMobile ? 12 : 4} key={item}>
+                                        <Button
+                                            variant="outlined"
+                                            sx={{
+                                                width: "100%",
+                                                justifyContent: "space-between",
+                                                pr: 1,
+                                                fontSize: isMobile ? '0.8rem' : 'inherit', // Adjust font size for mobile
+                                            }}
+                                        >
                                             {item} <i className="fas fa-plus-circle" style={{ color: "blue" }}></i>
                                         </Button>
                                     </Grid>
@@ -422,7 +410,6 @@ const PatientDetails = ({ patient }) => {
                     </Card>
 
                     {/* Sensors Graph */}
-
                     <Card sx={{ minHeight: 280, mt: 2, backgroundColor: "#ffffff", boxShadow: 2, borderRadius: 2 }}>
                         <CardContent>
                             <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
@@ -456,7 +443,6 @@ const PatientDetails = ({ patient }) => {
                             </Typography>
                         </CardContent>
                     </Card>
-
                 </Grid>
             </Grid>
         </Box>
