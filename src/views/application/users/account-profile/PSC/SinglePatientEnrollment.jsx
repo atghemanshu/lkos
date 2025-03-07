@@ -1,10 +1,16 @@
 import React, { useState, useEffect } from 'react';
-import { TextField, MenuItem, Button, Container, Grid, Checkbox, FormControlLabel, InputAdornment } from '@mui/material';
+import {
+    Dialog, DialogActions,
+    DialogContent, DialogTitle, TextField,
+    MenuItem, Button, Container, Grid, Checkbox,
+    FormControlLabel, InputAdornment, Typography
+} from '@mui/material';
 import axios from 'utils/axios';
 import MainCard from 'ui-component/cards/MainCard';
 import 'src/styles.css'; // Import your CSS file here
 import { openSnackbar } from 'store/slices/snackbar';
 import { useDispatch } from 'store';
+import { useNavigate } from 'react-router-dom';
 
 const SinglePatientEnrollment = () => {
     const dispatch = useDispatch();
@@ -34,6 +40,8 @@ const SinglePatientEnrollment = () => {
     };
 
     const [formData, setFormData] = useState(initialFormData);
+    const [openPopup, setOpenPopup] = useState(false);
+    const navigate = useNavigate();
 
     const [options, setOptions] = useState({
         genders: [],
@@ -123,7 +131,7 @@ const SinglePatientEnrollment = () => {
                 ...formData,
                 cellPhone: `${formData.phoneCountryCode}${formData.cellPhone}`,
                 providerId: 0,
-                countryCode:"USA",
+                countryCode: "USA",
             };
             var res = await axios.post('https://myavawebapi.azurewebsites.net/api/Patient/CreatePatient', submissionData, {
                 headers: {
@@ -145,6 +153,7 @@ const SinglePatientEnrollment = () => {
                     })
                 );
                 resetForm();
+                setOpenPopup(true);
             }
         } catch (error) {
             console.error('Error creating patient', error);
@@ -450,6 +459,21 @@ const SinglePatientEnrollment = () => {
                     </Grid>
                 </form>
             </Container>
+            {/* Popup Dialog */}
+            <Dialog open={openPopup} onClose={() => setOpenPopup(false)}>
+                <DialogTitle>Success</DialogTitle>
+                <DialogContent>
+                    <Typography>Patient created successfully. Do you want to continue?</Typography>
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={() => setOpenPopup(false)} color="error">
+                        Close
+                    </Button>
+                    <Button onClick={() => navigate('/apps/user/account-profile/PSC/Emergencyinfo')} color="primary">
+                        Continue
+                    </Button>
+                </DialogActions>
+            </Dialog>
         </MainCard>
     );
 };

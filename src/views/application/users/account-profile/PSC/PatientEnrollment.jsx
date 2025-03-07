@@ -55,21 +55,21 @@ const PatientEnrollment = () => {
                 </Grid>
                 {/* Manually Popup */}
                 <Dialog open={openManual} onClose={() => setOpenManual(false)} maxWidth="md" fullWidth>
-                    <DialogTitle sx={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                    <DialogTitle sx={{backgroundColor: '#f5f5f5', display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                         <Typography variant="h6">Manually Enroll Patient</Typography>
                         <IconButton onClick={() => setOpenManual(false)}><CloseIcon /></IconButton>
                     </DialogTitle>
                     <DialogContent sx={{ maxHeight: "80vh", overflowY: "auto" }}>
                         <SinglePatientEnrollment />
                     </DialogContent>
-                    <DialogActions>
+                    <DialogActions sx={{ backgroundColor: '#f5f5f5', padding: 2, borderRadius: '4px' }}>
                         <Button variant="contained" onClick={() => setOpenManual(false)}>Close</Button>
                     </DialogActions>
                 </Dialog>
 
                 {/* Upload Popup */}
                 <Dialog open={openUpload} onClose={() => setOpenUpload(false)} maxWidth="sm" fullWidth>
-                    <DialogTitle sx={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                    <DialogTitle sx={{backgroundColor: '#f5f5f5', display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                         <Typography variant="h6">Upload Patient Data</Typography>
                         <IconButton onClick={() => setOpenUpload(false)}><CloseIcon /></IconButton>
                     </DialogTitle>
@@ -78,7 +78,7 @@ const PatientEnrollment = () => {
                             This is a dummy body for Upload.
                         </Typography>
                     </DialogContent>
-                    <DialogActions>
+                    <DialogActions sx={{ backgroundColor: '#f5f5f5', padding: 2, borderRadius: '4px' }}>
                         <Button variant="contained" onClick={() => setOpenUpload(false)}>Close</Button>
                     </DialogActions>
                 </Dialog>

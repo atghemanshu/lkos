@@ -128,7 +128,7 @@ const PatientList = ({ filter }) => {
 
     const handleCloseButtonClick = () => {
         setIsRunning(false);
-        setOpenMiddlePopup(false);
+         setOpenMiddlePopup(false);
     };
 
     const formatTime = (seconds) => {
@@ -150,6 +150,7 @@ const PatientList = ({ filter }) => {
                         overflowY: "auto",
                         padding: "10px",
                         bgcolor: mode === ThemeMode.DARK ? "dark.main" : "background.paper",
+                        maxWidth: openRightSection ? '85%' : '100%'
                     }}
                 >
                     <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
@@ -208,7 +209,7 @@ const PatientList = ({ filter }) => {
                 {openRightSection && (
                     <Box
                         sx={{
-                            width: 300, // Default for Web
+                            width: 320, // Default for Web
                             height: 720,
                             bgcolor: "#f8fafc",
                             padding: 2,
@@ -223,7 +224,7 @@ const PatientList = ({ filter }) => {
                             alignItems: "center",
                             borderRadius: "10px",
                             overflow: "hidden",
-                            mt: 3,
+                            mt: 10,
 
                             // Mobile View Styles
                             "@media (max-width: 600px)": {
