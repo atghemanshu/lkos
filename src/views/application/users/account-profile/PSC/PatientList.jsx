@@ -123,10 +123,12 @@ const PatientList = ({ filter }) => {
     const handleRestartButtonClick = () => {
         setTimer(0);
         setIsRunning(true);
+        setOpenMiddlePopup(false);
     };
 
     const handleCloseButtonClick = () => {
         setIsRunning(false);
+        setOpenMiddlePopup(false);
     };
 
     const formatTime = (seconds) => {
@@ -400,10 +402,11 @@ const PatientList = ({ filter }) => {
                     </IconButton>
                     <IconButton
                         onClick={handleCloseButtonClick}
-                        sx={{ bgcolor: 'red', color: 'white', width: 50, height: 50, '&:hover': { bgcolor: 'darkred' } }}
+                        sx={{  bgcolor: "darkorange",color: 'white', width: 50, height: 50, '&:hover': { bgcolor: 'darkred' } }}
                     >
-                        <Close />
+                        <Pause/>
                     </IconButton>
+
                 </DialogActions>
             </Dialog>
         </>

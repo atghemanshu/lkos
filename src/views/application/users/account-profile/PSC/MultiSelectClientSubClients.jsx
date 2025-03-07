@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'utils/axios';
-import { MenuItem, Select, Checkbox, ListItemText, OutlinedInput, InputLabel, FormControl, ListSubheader } from '@mui/material';
+import { MenuItem,Grid, Select, Checkbox, ListItemText, OutlinedInput, InputLabel, FormControl, ListSubheader } from '@mui/material';
+import GoogleTranslate from 'GoogleTranslate';
 
 const MultiSelectDropdown = () => {
     const [clients, setClients] = useState([]);
@@ -62,41 +63,48 @@ const MultiSelectDropdown = () => {
 
     return (
         <div>
-            <FormControl sx={{ width: 220 }}>
-                <InputLabel id="multi-select-label">Clients & Subclients</InputLabel>
-                <Select
-                    labelId="multi-select-label"
-                    id="multi-select"
-                    multiple
-                    value={selectedValues}
-                    onChange={() => {}}
-                    input={<OutlinedInput label="Clients & Subclients" />}
-                    renderValue={() => getLabel()}
-                >
-                    {clients.map((client) => (
-                        <div key={client.id}>
-                            <ListSubheader>
-                                <Checkbox
-                                    checked={selectedValues.some((val) => val.id === client.id)}
-                                    onChange={() => handleClientChange(client)}
-                                />
-                                {client.displayValue}
-                            </ListSubheader>
-                            {subClients
-                                .filter((subClient) => subClient.parent.id === client.id)
-                                .map((subClient) => (
-                                    <MenuItem key={subClient.id} value={subClient.id} sx={{ pl: 4 }}>
-                                        <Checkbox
-                                            checked={selectedValues.some((val) => val.id === subClient.id)}
-                                            onChange={() => handleSubClientChange(subClient)}
-                                        />
-                                        <ListItemText primary={subClient.displayValue} />
-                                    </MenuItem>
-                                ))}
-                        </div>
-                    ))}
-                </Select>
-            </FormControl>
+               <Grid container alignItems="center">
+            <Grid item>
+                <FormControl sx={{ width: 220 }}>
+                    <InputLabel id="multi-select-label">Clients & Subclients</InputLabel>
+                    <Select
+                        labelId="multi-select-label"
+                        id="multi-select"
+                        multiple
+                        value={selectedValues}
+                        onChange={() => { }}
+                        input={<OutlinedInput label="Clients & Subclients" />}
+                        renderValue={() => getLabel()}
+                    >
+                        {clients.map((client) => (
+                            <div key={client.id}>
+                                <ListSubheader>
+                                    <Checkbox
+                                        checked={selectedValues.some((val) => val.id === client.id)}
+                                        onChange={() => handleClientChange(client)}
+                                    />
+                                    {client.displayValue}
+                                </ListSubheader>
+                                {subClients
+                                    .filter((subClient) => subClient.parent.id === client.id)
+                                    .map((subClient) => (
+                                        <MenuItem key={subClient.id} value={subClient.id} sx={{ pl: 4 }}>
+                                            <Checkbox
+                                                checked={selectedValues.some((val) => val.id === subClient.id)}
+                                                onChange={() => handleSubClientChange(subClient)}
+                                            />
+                                            <ListItemText primary={subClient.displayValue} />
+                                        </MenuItem>
+                                    ))}
+                            </div>
+                        ))}
+                    </Select>
+                </FormControl>
+            </Grid>
+            <Grid item>
+                <GoogleTranslate />
+            </Grid>
+        </Grid>
         </div>
     );
 };

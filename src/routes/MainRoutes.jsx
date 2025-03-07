@@ -83,6 +83,7 @@ const AppCrmEarning = Loadable(lazy(() => import('views/application/crm/SalesMan
 const AppMap = Loadable(lazy(() => import('views/application/map')));
 const UnderConstruction = Loadable(lazy(() => import('views/pages/maintenance/UnderConstruction')));
 const PatientEnrollment = Loadable(lazy(() => import('views/application/users/account-profile/PSC/PatientEnrollment')));
+const Emergencyinfo = Loadable(lazy(() => import('views/application/users/account-profile/PSC/Emergencyinfo')));
 
 // // forms component routing
 // const FrmComponentsTextfield = Loadable(lazy(() => import('views/forms/components/TextField')));
@@ -209,6 +210,10 @@ const MainRoutes = {
         {
             path: '/apps/user/account-profile/PSC/PatientEnrollment',
             element: <PatientEnrollment />
+        },
+        {
+            path: '/apps/user/account-profile/PSC/Emergencyinfo',
+            element: <Emergencyinfo />
         },
         {
             path: '/apps/user/account-profile/profile2',

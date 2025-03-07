@@ -64,7 +64,18 @@ const SinglePatientEnrollment = () => {
     }, []);
 
     const handleChange = (e) => {
-        setFormData({ ...formData, [e.target.name]: e.target.value });
+        if (e.target.name == "raceId") {
+            setFormData({ ...formData, [e.target.name]: parseInt(e.target.value) });
+        } else if (e.target.name == "ethnicityId") {
+            setFormData({ ...formData, [e.target.name]: parseInt(e.target.value) });
+        } else if (e.target.name == "clientId") {
+            setFormData({ ...formData, [e.target.name]: parseInt(e.target.value) });
+        }
+        else if (e.target.name == "subclientId") {
+            setFormData({ ...formData, [e.target.name]: parseInt(e.target.value) });
+        } else {
+            setFormData({ ...formData, [e.target.name]: e.target.value });
+        }
     };
 
     const handleClientChange = (e) => {
@@ -111,7 +122,8 @@ const SinglePatientEnrollment = () => {
             const submissionData = {
                 ...formData,
                 cellPhone: `${formData.phoneCountryCode}${formData.cellPhone}`,
-                providerId: 0
+                providerId: 0,
+                countryCode:"USA",
             };
             var res = await axios.post('https://myavawebapi.azurewebsites.net/api/Patient/CreatePatient', submissionData, {
                 headers: {

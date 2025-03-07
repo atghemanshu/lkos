@@ -330,10 +330,10 @@ const PatientCard = memo(({ patient, isBookmarked, onBookmarkClick }) => {
                                         <Typography><strong>Chronic Conditions:</strong> {patient.conditions || "-"}</Typography>
                                     </Box>
                                     <Box marginBottom="8px">
-                                        <Typography><strong>L/Last Admit:</strong> {patient.lastAdmit || "-"}</Typography>
+                                        <Typography><strong>LA(Last Alert):</strong> {patient.lastAdmit || "-"}</Typography>
                                     </Box>
                                     <Box marginBottom="8px">
-                                        <Typography><strong>Primary PPC:</strong> {patient.primaryPPC || "-"}</Typography>
+                                        <Typography><strong>Primary PSC:</strong> {patient.primaryPPC || "-"}</Typography>
                                     </Box>
                                     <Box marginBottom="8px">
                                         <Typography><strong>Primary Doctor:</strong> {patient.primaryDoctor || "-"}</Typography>

@@ -232,7 +232,7 @@ const application = {
             title: <FormattedMessage id="Emergency Info" />,
             type: 'item',
             icon: icons.IconEmergencyBed,
-            url: '/pages/under-construction',
+            url: '/apps/user/account-profile/PSC/Emergencyinfo',
             breadcrumbs: false
         },
         ,
