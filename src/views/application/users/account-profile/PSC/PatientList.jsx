@@ -2,7 +2,7 @@ import React, { useEffect, useState, useCallback, useRef } from 'react';
 import {
     Grid, CircularProgress, Typography,
     Box, TextField, List, ListItemText, ListItem,
-    MenuItem, Select, InputLabel, FormControl,
+    MenuItem, Select, InputLabel, FormControl, Modal,
     Dialog, DialogTitle, DialogActions, Button, DialogContent
 } from '@mui/material';
 import PatientCard from './PatientCard';
@@ -13,6 +13,7 @@ import { IconButton } from '@mui/material';
 // import { PlayArrow, Replay, Close } from '@mui/icons-material';
 import { PlayArrow, Pause, Replay, Save, Close } from "@mui/icons-material";
 import { useMediaQuery } from "@mui/material";
+import ChangePassword from './ChangePassword';
 
 
 
@@ -29,6 +30,9 @@ const PatientList = ({ filter }) => {
     const [openRightSection, setOpenRightSection] = useState(false);
     const openRightSectionRef = useRef(openRightSection);
     const isSmallScreen = useMediaQuery(theme.breakpoints.down("sm"));
+    const [openChangePassModal, setOpenChangePassModal] = useState(false);
+
+
 
     // Timer State
     const [timer, setTimer] = useState(0);
@@ -128,7 +132,7 @@ const PatientList = ({ filter }) => {
 
     const handleCloseButtonClick = () => {
         setIsRunning(false);
-         setOpenMiddlePopup(false);
+        setOpenMiddlePopup(false);
     };
 
     const formatTime = (seconds) => {
@@ -137,10 +141,19 @@ const PatientList = ({ filter }) => {
         return `${mins}:${secs < 10 ? '0' : ''}${secs}`;
     };
 
+    //for right side buttons
+    const handleButtonClick = (text) => {
+        if (text === "Change Password") {
+            setOpenChangePassModal(true);
+        } else {
+            console.log(`${text} clicked`); // Handle other button clicks
+        }
+    };
+
 
     return (
         <>
-            <Box sx={{ display: "flex", height: "100vh", overflow: "hidden" }}>
+            <Box sx={{ display: "flex", height: "150vh", overflow: "hidden" }}>
                 {/* Left Column (Patient List) */}
                 <Box
                     sx={{
@@ -153,21 +166,40 @@ const PatientList = ({ filter }) => {
                         maxWidth: openRightSection ? '85%' : '100%'
                     }}
                 >
-                    <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
-                        <Typography variant="h6">Total Records: {sortedPatients.length}</Typography>
+                    <Box
+                        display="flex"
+                        justifyContent="space-between"
+                        alignItems="center"
+                        flexWrap="wrap" // Ensures wrapping on small screens
+                        gap={2} // Adds spacing when stacked
+                        mb={2}
+                        sx={{
+                            flexDirection: { xs: "column", sm: "row" }, // Stack on mobile, row on larger screens
+                        }}
+                    >
+                        {/* Total Records */}
+                        <Typography variant="h6" sx={{ textAlign: { xs: "center", sm: "left" } }}>
+                            Total Records: {sortedPatients.length}
+                        </Typography>
+
+                        {/* Search Input */}
                         <TextField
                             label="Search Patients"
                             variant="outlined"
                             size="small"
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
-                            sx={{ width: "30%" }}
+                            sx={{
+                                width: { xs: "100%", sm: "30%" }, // Full width on mobile, 30% on larger screens
+                            }}
                         />
+
+                        {/* Sort Dropdown */}
                         <Box
                             sx={{
-                                width: '20%',
-                                borderColor: mode === ThemeMode.DARK ? 'dark.main' : 'primary.light',
-                                bgcolor: mode === ThemeMode.DARK ? 'dark.main' : 'primary.light'
+                                width: { xs: "100%", sm: "20%" }, // Full width on mobile, 20% on larger screens
+                                borderColor: (theme) => theme.palette.mode === ThemeMode.DARK ? "dark.main" : "primary.light",
+                                bgcolor: (theme) => theme.palette.mode === ThemeMode.DARK ? "dark.main" : "primary.light",
                             }}
                         >
                             <FormControl fullWidth size="small">
@@ -180,6 +212,7 @@ const PatientList = ({ filter }) => {
                             </FormControl>
                         </Box>
                     </Box>
+
 
                     <Grid container spacing={2}>
                         {loading ? (
@@ -351,7 +384,13 @@ const PatientList = ({ filter }) => {
                                     "Tele Health",
                                 ].map((text, index) => (
                                     <ListItem key={index} sx={{ borderBottom: "1px solid #ddd", padding: 1 }}>
-                                        <ListItemText primary={text} />
+                                        <Button
+                                            // variant="contained"
+                                            // fullWidth
+                                            onClick={() => handleButtonClick(text)}
+                                        >
+                                            {text}
+                                        </Button>
                                     </ListItem>
                                 ))}
                             </List>
@@ -403,13 +442,67 @@ const PatientList = ({ filter }) => {
                     </IconButton>
                     <IconButton
                         onClick={handleCloseButtonClick}
-                        sx={{  bgcolor: "darkorange",color: 'white', width: 50, height: 50, '&:hover': { bgcolor: 'darkred' } }}
+                        sx={{ bgcolor: "darkorange", color: 'white', width: 50, height: 50, '&:hover': { bgcolor: 'darkred' } }}
                     >
-                        <Pause/>
+                        <Pause />
                     </IconButton>
 
                 </DialogActions>
             </Dialog>
+
+
+
+            {/* Change Password Modal */}
+            <Modal open={openChangePassModal} onClose={() => setOpenChangePassModal(false)}>
+                <Box
+                    sx={{
+                        position: 'absolute',
+                        top: '50%',
+                        left: '50%',
+                        transform: 'translate(-50%, -50%)',
+                        // Use theme and media query for responsive width
+                        width: (theme) => {
+                            const isSmallScreen = useMediaQuery(theme.breakpoints.down("sm"));
+                            const isMediumScreen = useMediaQuery(theme.breakpoints.between("sm", "md"));
+
+                            if (isSmallScreen) return "90%"; // Mobile
+                            if (isMediumScreen) return "60%"; // Tablets & small desktops
+                            return "400px"; // Larger screens
+                        },
+                        maxWidth: '90%', // Ensure it doesn't exceed the screen width on smaller devices
+                        bgcolor: 'background.paper',
+                        boxShadow: 24,
+                        p: 3,
+                        borderRadius: 2,
+                        position: 'relative',
+                    }}
+                >
+                    {/* Cross (X) Button at the Top Right */}
+                    <IconButton
+                        aria-label="close"
+                        onClick={() => setOpenChangePassModal(false)}
+                        sx={{
+                            position: 'absolute',
+                            top: 8,
+                            right: 8,
+                        }}
+                    >
+                        X
+                    </IconButton>
+                    <br></br>
+                    <br></br>
+
+                    <ChangePassword setOpenChangePassModal={setOpenChangePassModal} />
+
+                    {/* Close Button at the Bottom */}
+                    <Box sx={{ display: 'flex', justifyContent: 'flex-end', mt: 2 }}>
+                        <Button variant="outlined" onClick={() => setOpenChangePassModal(false)}>
+                            Close
+                        </Button>
+                    </Box>
+                </Box>
+            </Modal>
+
         </>
 
 

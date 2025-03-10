@@ -1,57 +1,171 @@
-// material-ui
-import Alert from '@mui/material/Alert';
-import AlertTitle from '@mui/material/AlertTitle';
-import Button from '@mui/material/Button';
-import Grid from '@mui/material/Grid';
-import TextField from '@mui/material/TextField';
+import React, { useState } from "react";
+import {
+    Grid,
+    TextField,
+    Button,
+    Dialog,
+    DialogActions,
+    DialogTitle,
+    Typography
+} from "@mui/material";
 
-// project imports
-import SubCard from 'ui-component/cards/SubCard';
-import AnimateButton from 'ui-component/extended/AnimateButton';
-import { gridSpacing } from 'store/constant';
+const ChangePassword = ({ setOpenChangePassModal }) => {
+    const [currentPassword, setCurrentPassword] = useState("");
+    const [newPassword, setNewPassword] = useState("");
+    const [confirmPassword, setConfirmPassword] = useState("");
+    const [errors, setErrors] = useState({});
+    const [openConfirmDialog, setOpenConfirmDialog] = useState(false);
 
-// ==============================|| PROFILE 1 - CHANGE PASSWORD ||============================== //
+    // Password Validation Function
+    const validatePassword = (password) => {
+        const errors = {};
 
-const ChangePassword = () => {
+        if (!password) {
+            errors.required = "Password is required.";
+        } else {
+            if (password.length < 8) errors.length = "Minimum 8 characters required.";
+            if (!/[a-z]/.test(password)) errors.lowercase = "At least 1 lowercase letter required.";
+            if (!/[A-Z]/.test(password)) errors.uppercase = "At least 1 uppercase letter required.";
+            if (!/[0-9]/.test(password)) errors.number = "At least 1 number required.";
+            if (!/[!@#$%^&*(),.?":{}|<>]/.test(password)) errors.special = "At least 1 special character required.";
+        }
+
+        return errors;
+    };
+
+    // Form Validation Before Submission
+    const handleSubmit = () => {
+        let newErrors = {};
+
+        // Validate Old Password (Required)
+        if (!currentPassword) {
+            newErrors.currentPassword = "Old Password is required.";
+        }
+
+        // Validate New Password
+        const newPasswordErrors = validatePassword(newPassword);
+        if (Object.keys(newPasswordErrors).length > 0) {
+            newErrors.newPassword = newPasswordErrors;
+        }
+
+        // Confirm Password Check
+        if (confirmPassword !== newPassword) {
+            newErrors.confirmPassword = { match: "Passwords do not match." };
+        }
+
+        if (Object.keys(newErrors).length > 0) {
+            setErrors(newErrors);
+        } else {
+            setErrors({});
+            setOpenConfirmDialog(true);
+        }
+    };
+
+
+    // Confirm Password Change
+    const handleConfirm = () => {
+        console.log("Current Password:", currentPassword);
+        console.log("New Password:", newPassword);
+        console.log("Confirm Password:", confirmPassword);
+        setOpenConfirmDialog(false);
+        setOpenChangePassModal(false); // Close modal (handled by parent)
+    };
+
     return (
-        <Grid container spacing={gridSpacing}>
-            <Grid item xs={12}>
-                <Alert severity="warning" variant="outlined" sx={{ borderColor: 'warning.dark' }}>
-                    <AlertTitle>Alert!</AlertTitle>
-                    Your Password will expire in every 3 months. So change it periodically.
-                    <strong> Do not share your password</strong>
-                </Alert>
+        <>
+            <h3 style={{ textAlign: "center", marginBottom: "16px" }}>CHANGE PASSWORD</h3>
+
+            {/* Password Fields */}
+            <Grid container spacing={2}>
+                <Grid item xs={12}>
+                    <TextField
+                        type="password"
+                        label="Old Password"
+                        fullWidth
+                        value={currentPassword}
+                        onChange={(e) => setCurrentPassword(e.target.value)}
+                        error={!!errors.currentPassword} // Shows red border if error exists
+                        helperText={errors.currentPassword} // Displays error message
+                    />
+                </Grid>
+
+                <Grid item xs={12}>
+                    <TextField
+                        type="password"
+                        label="New Password"
+                        fullWidth
+                        required
+                        value={newPassword}
+                        onChange={(e) => setNewPassword(e.target.value)}
+                        error={!!Object.keys(errors.newPassword || {}).length}
+                        helperText={
+                            Object.values(errors.newPassword || {}).map((err, index) => (
+                                <Typography key={index} color="error" variant="caption" display="block">
+                                    {err}
+                                </Typography>
+                            ))
+                        }
+                    />
+                </Grid>
+                <Grid item xs={12}>
+                    <TextField
+                        type="password"
+                        label="Confirm New Password"
+                        fullWidth
+                        required
+                        value={confirmPassword}
+                        onChange={(e) => setConfirmPassword(e.target.value)}
+                        error={!!errors.confirmPassword?.match}
+                        helperText={errors.confirmPassword?.match}
+                    />
+                </Grid>
+                <Grid item xs={12}>
+                    <p style={{ fontSize: "14px", color: "#555" }}>
+                        Password should be a minimum of 8 characters
+                        <br />
+                        ✅ At least 1 letter
+                        <br />
+                        ✅ At least 1 number
+                        <br />
+                        ✅ At least 1 uppercase and lowercase combination
+                        <br />
+                        ✅ At least 1 special character
+                    </p>
+                </Grid>
             </Grid>
-            <Grid item xs={12}>
-                <SubCard title="Change Password">
-                    <form noValidate autoComplete="off">
-                        <Grid container spacing={gridSpacing} sx={{ mb: 1.75 }}>
-                            <Grid item xs={12} md={6}>
-                                <TextField type="password" id="outlined-basic7" fullWidth label="Current Password" />
-                            </Grid>
-                        </Grid>
-                        <Grid container spacing={gridSpacing} sx={{ mb: 1.75 }}>
-                            <Grid item xs={12} md={6}>
-                                <TextField type="password" id="outlined-basic8" fullWidth label="New Password" />
-                            </Grid>
-                            <Grid item xs={12} md={6}>
-                                <TextField type="password" id="outlined-basic9" fullWidth label="Confirm Password" />
-                            </Grid>
-                        </Grid>
-                    </form>
-                    <Grid spacing={2} container justifyContent="flex-end" sx={{ mt: 3 }}>
-                        <Grid item>
-                            <AnimateButton>
-                                <Button variant="contained">Change Password</Button>
-                            </AnimateButton>
-                        </Grid>
-                        <Grid item>
-                            <Button sx={{ color: 'error.main' }}>Clear</Button>
-                        </Grid>
-                    </Grid>
-                </SubCard>
+
+            {/* Buttons */}
+            <Grid container spacing={2} justifyContent="center" sx={{ mt: 2 }}>
+                <Grid item>
+                    <Button variant="contained" color="primary" onClick={handleSubmit}>
+                        SUBMIT
+                    </Button>
+                </Grid>
+                {/* <Grid item>
+                    <Button variant="outlined" color="info" onClick={() => setNewPassword("")}>
+                        RESET PASSWORD
+                    </Button>
+                </Grid> */}
+                <Grid item>
+                    <Button variant="contained" color="error" onClick={() => setOpenChangePassModal(false)}>
+                        CANCEL
+                    </Button>
+                </Grid>
             </Grid>
-        </Grid>
+
+            {/* Confirmation Dialog */}
+            <Dialog open={openConfirmDialog} onClose={() => setOpenConfirmDialog(false)}>
+                <DialogTitle>Are you sure you want to change your password?</DialogTitle>
+                <DialogActions>
+                    <Button onClick={() => setOpenConfirmDialog(false)} color="error">
+                        No
+                    </Button>
+                    <Button onClick={handleConfirm} color="primary">
+                        Yes
+                    </Button>
+                </DialogActions>
+            </Dialog>
+        </>
     );
 };
 

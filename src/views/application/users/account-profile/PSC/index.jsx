@@ -8,7 +8,7 @@ import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
 import Tab from '@mui/material/Tab';
 import Tabs from '@mui/material/Tabs';
-
+import { useMediaQuery } from '@mui/material';
 // project imports
 import Profile from './Profile';
 import PersonalAccount from './PersonalAccount';
@@ -84,6 +84,7 @@ const tabsOption = [
 
 const Home = () => {
     const theme = useTheme();
+    const isMobile = useMediaQuery('(max-width:600px)');
     const [value, setValue] = useState(0);
     const [patientCounts, setPatientCounts] = useState({
         ALL: 0,
@@ -162,6 +163,7 @@ const Home = () => {
                             variant="scrollable"
                             sx={{
                                 mb: 0, // Remove bottom margin for proper alignment
+                                mt: isMobile ? 6 : 0, // Apply margin-top 10 for mobile, else 0
                                 '& a': {
                                     minHeight: 'auto',
                                     minWidth: 10,
