@@ -1,0 +1,7 @@
+.required-asterisk {
+    color: red;
+}
+.MuiFormLabel-asterisk,
+.MuiFormControlLabel-asterisk {
+    color: red;
+}
